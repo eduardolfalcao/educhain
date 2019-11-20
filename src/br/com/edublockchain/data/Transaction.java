@@ -16,7 +16,7 @@ public class Transaction implements Comparable<Transaction>{
 		this.sender = sender;
 		this.receiver = receiver;
 		this.amount = amount;
-		formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+		this.formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		this.creationTime = new Date(System.currentTimeMillis());
 	}
 	

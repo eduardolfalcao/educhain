@@ -1,6 +1,7 @@
 package br.com.edublockchain.util;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class MockUtils {
@@ -12,7 +13,11 @@ public class MockUtils {
 	
 	
 	public MockUtils(int seed) {
-		this.rand = new java.util.Random(seed);
+		this.rand = new Random(seed);
+	}
+	
+	public MockUtils() {
+		this.rand = new Random();
 	}
 
 	// consider using a Map<String,Boolean> to say whether the identifier is being used or not 
@@ -32,8 +37,12 @@ public class MockUtils {
 	    return builder.toString();
 	}
 	
+	public int randomValue(int limit) {
+		return rand.nextInt(limit);
+	}
+	
 	public int randomValue() {
-		return rand.nextInt(1000000);
+		return rand.nextInt();
 	}
 
 }

@@ -20,7 +20,7 @@ public class TransactionRepository {
 	private TransactionRepository() {
 		this.mock = new MockUtils(TransactionRepository.SEED);
 		this.transactionPool = new TreeSet<Transaction>();
-		this.mockTransactionCreation();
+		this.mockTransactionCreation();		
 	}
 
 	public static TransactionRepository getSingleton() {		
@@ -40,7 +40,7 @@ public class TransactionRepository {
 					Transaction t = new Transaction(
 							mock.randomIdentifier(), 
 							mock.randomIdentifier(),
-							mock.randomValue());
+							mock.randomValue(1000000));
 					transactionPool.add(t);
 				}
 				System.out.println(transactionPool);
