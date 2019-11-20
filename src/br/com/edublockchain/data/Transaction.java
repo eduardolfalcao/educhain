@@ -12,6 +12,11 @@ public class Transaction {
 		this.amount = amount;
 	}
 	
+	@Override
+	public String toString() {
+		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount;
+	}
+	
 	public String getSender() {
 		return sender;
 	}
