@@ -1,7 +1,7 @@
 package br.com.edublockchain.repository;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +19,7 @@ public class TransactionRepository {
 
 	private TransactionRepository() {
 		this.mock = new MockUtils(TransactionRepository.SEED);
-		this.transactionPool = new HashSet<Transaction>();
+		this.transactionPool = new TreeSet<Transaction>();
 		this.mockTransactionCreation();
 	}
 

@@ -4,9 +4,10 @@ import java.util.List;
 
 public class Block {	
 	
-	private final int MAX_TRANSACTIONS = 10;
+	public static final int MAX_TRANSACTIONS = 10;
 	
 	private List<Transaction> transactions;
+	private Block previousBlock;
 	private String hashPreviousBlock;
 	private int nonce;
 	private int difficulty; //num of zeros on beginning
@@ -22,6 +23,14 @@ public class Block {
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
+	}
+	
+	public Block getPreviousBlock() {
+		return previousBlock;
+	}
+	
+	public void setPreviousBlock(Block previousBlock) {
+		this.previousBlock = previousBlock;
 	}
 
 	public String getHashPreviousBlock() {

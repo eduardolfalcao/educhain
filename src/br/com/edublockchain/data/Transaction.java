@@ -1,20 +1,28 @@
 package br.com.edublockchain.data;
 
-public class Transaction {
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+public class Transaction implements Comparable<Transaction>{
+
+	private SimpleDateFormat formatter;
+	
 	private String sender;
 	private String receiver;
 	private double amount;
+	private Date creationTime;
 	
 	public Transaction(String sender, String receiver, double amount) {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.amount = amount;
+		formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+		this.creationTime = new Date(System.currentTimeMillis());
 	}
 	
 	@Override
 	public String toString() {
-		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount;
+		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount+"; Creation time: "+formatter.format(creationTime);
 	}
 	
 	public String getSender() {
@@ -34,6 +42,12 @@ public class Transaction {
 	}
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+	public Date getCreationTime() {
+		return creationTime;
+	}
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
 	}
 
 	@Override
@@ -70,6 +84,15 @@ public class Transaction {
 		} else if (!sender.equals(other.sender))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Transaction t) {
+		if(this.amount > t.getAmount())
+			return 1;
+		if(this.amount < t.getAmount())
+			return -1;
+		return 0;
 	}
 	
 }
