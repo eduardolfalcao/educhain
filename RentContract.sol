@@ -5,13 +5,13 @@ contract RentContract{
 	address renter;
 	uint dailyCost;
 
-	function RentContract(uint cost){
+	constructor (uint cost) public{
 		renter = msg.sender;
 		dailyCost = cost;
 	}
 
 	//called by the guest
-	function pay(uint amountOfDays) payable{
+	function pay(uint amountOfDays) payable public{
 		require(msg.value == dailyCost*amountOfDays);
 		//if true, money is already transferred to the contract
 
@@ -21,7 +21,7 @@ contract RentContract{
 	}
 
 	//called by the renter
-	function withdraw(address guest){
+	function withdraw(address guest) public{
 		require(msg.sender==renter);
 		if((now - enteringTime[guest])/60/60/24 >= stayTimeDays[guest]){
 			msg.sender.transfer(amountPaid[guest]);
@@ -32,7 +32,7 @@ contract RentContract{
 	}
 	
 	//called by anyone
-	function checkPayment(address guest) returns(bool){
+	function checkPayment(address guest) public returns(bool){
 		return amountPaid[guest] > 0;
 	}
 }
