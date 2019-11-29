@@ -47,7 +47,7 @@ public class TransactionRepository {
 			}
 		};
 
-		int delay = 15;
+		int delay = 30;
 		scheduler.scheduleAtFixedRate(task, 0, delay, TimeUnit.SECONDS);
 	}
 	

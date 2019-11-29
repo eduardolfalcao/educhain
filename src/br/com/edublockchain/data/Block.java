@@ -7,7 +7,7 @@ import java.util.List;
 public class Block {	
 	
 	public static final int MAX_TRANSACTIONS = 3;
-	public static final int DIFFICULTY = 4; 	//num of zeros on beginning
+	public static final int DIFFICULTY = 5; 	//num of zeros on beginning
 	
 	private SimpleDateFormat formatter;
 	
@@ -120,7 +120,5 @@ public class Block {
 			return false;
 		return true;
 	}
-	
-	
 	
 }

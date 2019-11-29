@@ -13,24 +13,36 @@ import br.com.edublockchain.util.MockUtils;
 public class Miner extends Thread {
 	
 	private MockUtils rand;
-	private Block lastBlock;
+	private Block initialBlock, lastBlock;
 	private String minerId;
 	
-	public Miner(Block initialBlock, String minerId) {
+	public Miner(String minerId) {
 		this.rand = new MockUtils();
-		this.lastBlock = initialBlock;
 		this.minerId = minerId;
+	}
+	
+	private void setupInitialBlock(Block initialBlock) {
+		this.initialBlock = initialBlock;
+		this.lastBlock = initialBlock;				
 	}
 	
 	@Override
 	public void run() {
-		while(TransactionRepository.getSingleton().getTransactionPool().size()>0) {
-			Block currentBlock = createBlockWithTransactions(lastBlock);
-			//System.out.println("Block created ("+minerId+"): "+currentBlock);
+		Block currentBlock = createBlockWithTransactions(null);
+		setupInitialBlock(currentBlock);		
+		
+		do {
 			findNonce(currentBlock);
 			currentBlock.setInclusionTime(new Date(System.currentTimeMillis()));
 			System.out.println("Block is now valid and being included ("+minerId+"): "+currentBlock);
+			System.out.println(this);
+						
+			this.lastBlock = currentBlock;
+			
+			if(TransactionRepository.getSingleton().getTransactionPool().size()>0)
+				currentBlock = createBlockWithTransactions(lastBlock);
 		}
+		while(currentBlock != lastBlock);
 	}
 	
 	private Block createBlockWithTransactions(Block lastBlock) {
@@ -70,13 +82,27 @@ public class Miner extends Thread {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		String out = "Miner id: "+minerId+"\n";
+		out += "#########################\n";
+		Block aux = this.lastBlock;
+		while(aux != null && aux != this.initialBlock) {
+			out += aux.toString()+"\n";
+			out += "#########################\n";
+			aux = aux.getPreviousBlock();
+		}
+		out += "\n\n";
+		return out;			
+	}
+	
 	public static void main(String[] args) {
 		TransactionRepository rep = TransactionRepository.getSingleton();
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) {}
 		
-		Miner m = new Miner(new Block(null, null), "Eduardo");
+		Miner m = new Miner("Eduardo");
 		m.start();
 	}
 	
