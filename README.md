@@ -13,3 +13,15 @@ To have the miners communicating the fresh mined blocks we use RabbitMQ (though 
 ```
 sudo docker run -d --hostname my-rabbit --name edublockchain-rabbit rabbitmq:3
 ```
+
+This will start a RabbitMQ container listening on the default port of 5672. If you give wait a minute, then do ```docker logs edublockchain-rabbit```, you'll see in the output something similar to:
+
+```
+ Starting broker...2019-12-10 00:24:48.779 [info] <0.262.0>                                                                                  
+ node           : rabbit@my-rabbit                                                                                                            
+ home dir       : /var/lib/rabbitmq                                                                                                           
+ config file(s) : /etc/rabbitmq/rabbitmq.conf                                                                                                 
+ cookie hash    : usYzAqYHrXPVfEZoa3Rrsw==
+ log(s)         : <stdout>
+ database dir   : /var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+ ```
