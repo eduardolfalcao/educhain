@@ -1,4 +1,4 @@
-package br.com.edublockchain.data;
+package br.com.edublockchain.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -20,13 +20,15 @@ public class Block implements Serializable{
 	private int nonce;	
 	private Date creationTime;
 	private Date inclusionTime;
+	private String creatorId;
 	
 	
-	public Block(Block previousBlock, List<Transaction> transactions) {
+	public Block(Block previousBlock, List<Transaction> transactions, String creatorId) {
 		this.previousBlock = previousBlock;
 		this.transactions = transactions;
 		this.formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		this.creationTime = new Date(System.currentTimeMillis());
+		this.creatorId = creatorId;
 	}
 	
 	@Override
@@ -86,42 +88,13 @@ public class Block implements Serializable{
 		this.inclusionTime = inclusionTime;
 	}
 	
+	public String getCreatorId() {
+		return creatorId;
+	}
+	
 	public String hashOfBlock() {
 		String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(toString());
 		return sha256hex;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Block other = (Block) obj;
-		if (hashPreviousBlock == null) {
-			if (other.hashPreviousBlock != null)
-				return false;
-		} else if (!hashPreviousBlock.equals(other.hashPreviousBlock))
-			return false;
-		if (nonce != other.nonce)
-			return false;
-		if (previousBlock == null) {
-			if (other.previousBlock != null)
-				return false;
-		} else if (!previousBlock.equals(other.previousBlock))
-			return false;
-		if (creationTime != other.creationTime)
-			return false;
-		if (inclusionTime != other.inclusionTime)
-			return false;
-		if (transactions == null) {
-			if (other.transactions != null)
-				return false;
-		} else if (!transactions.equals(other.transactions))
-			return false;
-		return true;
 	}
 	
 }

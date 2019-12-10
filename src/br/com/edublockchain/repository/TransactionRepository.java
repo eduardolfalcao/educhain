@@ -6,7 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import br.com.edublockchain.data.Transaction;
+import br.com.edublockchain.model.Block;
+import br.com.edublockchain.model.Transaction;
 import br.com.edublockchain.util.MockUtils;
 
 public class TransactionRepository {
@@ -30,6 +31,10 @@ public class TransactionRepository {
 	public Set<Transaction> getTransactionPool() {
 		return transactionPool;
 	}
+	
+	public void removeTransactions(Block b) {
+		transactionPool.removeAll(b.getTransactions());		
+	}
 
 	private void mockTransactionCreation() {
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -47,7 +52,7 @@ public class TransactionRepository {
 			}
 		};
 
-		int delay = 30;
+		int delay = 150;
 		scheduler.scheduleAtFixedRate(task, 0, delay, TimeUnit.SECONDS);
 	}
 	

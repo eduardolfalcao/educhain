@@ -1,4 +1,4 @@
-package br.com.edublockchain.data;
+package br.com.edublockchain.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -53,6 +53,8 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 		this.creationTime = creationTime;
 	}
 
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,6 +62,8 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 		long temp;
 		temp = Double.doubleToLongBits(amount);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((creationTime == null) ? 0 : creationTime.hashCode());
+		result = prime * result + ((formatter == null) ? 0 : formatter.hashCode());
 		result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
 		result = prime * result + ((sender == null) ? 0 : sender.hashCode());
 		return result;
@@ -75,6 +79,16 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 			return false;
 		Transaction other = (Transaction) obj;
 		if (Double.doubleToLongBits(amount) != Double.doubleToLongBits(other.amount))
+			return false;
+		if (creationTime == null) {
+			if (other.creationTime != null)
+				return false;
+		} else if (!creationTime.equals(other.creationTime))
+			return false;
+		if (formatter == null) {
+			if (other.formatter != null)
+				return false;
+		} else if (!formatter.equals(other.formatter))
 			return false;
 		if (receiver == null) {
 			if (other.receiver != null)
