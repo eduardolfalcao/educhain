@@ -1,9 +1,12 @@
 package br.com.edublockchain.data;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Transaction implements Comparable<Transaction>{
+public class Transaction implements Comparable<Transaction>, Serializable{
+
+	private static final long serialVersionUID = -8270876610064570814L;
 
 	private SimpleDateFormat formatter;
 	

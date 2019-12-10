@@ -1,22 +1,24 @@
 package br.com.edublockchain.system;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import br.com.edublockchain.data.Block;
-import br.com.edublockchain.data.Transaction;
-import br.com.edublockchain.repository.TransactionRepository;
-import br.com.edublockchain.util.MockUtils;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import br.com.edublockchain.data.Block;
+import br.com.edublockchain.data.Transaction;
+import br.com.edublockchain.repository.TransactionRepository;
+import br.com.edublockchain.util.MockUtils;
 
 public class Miner extends Thread {
 	
@@ -114,8 +116,24 @@ public class Miner extends Thread {
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+            
             String message = ""+block.getNonce();
-            channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes(StandardCharsets.UTF_8));
+            byte[] blockInBytes = null;
+            
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutput out = null;
+            try {
+              out = new ObjectOutputStream(bos);   
+              out.writeObject(block);
+              out.flush();
+              blockInBytes = bos.toByteArray();
+            } finally {
+              try {
+                bos.close();
+              } catch (IOException ex) {}
+            }
+            
+            channel.basicPublish(EXCHANGE_NAME, "", null, blockInBytes);
             System.out.println(this.minerId+" Sent '" + message + "'");
         } catch (IOException e) {
 			e.printStackTrace();

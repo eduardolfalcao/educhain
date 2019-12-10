@@ -1,12 +1,17 @@
 package br.com.edublockchain.system;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+
+import br.com.edublockchain.data.Block;
 
 public class MinerListener implements Runnable{
 
@@ -33,7 +38,27 @@ public class MinerListener implements Runnable{
 		    
 			System.out.println(id+ ": Waiting for messages. To exit press CTRL+C");
 			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-	            String message = new String(delivery.getBody(), "UTF-8");
+	            
+				ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
+				ObjectInput in = null;
+				Block block = null;
+				try {
+				  in = new ObjectInputStream(bis);
+				  block = (Block) in.readObject();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} finally {
+				  try {
+				    if (in != null) {
+				      in.close();
+				    }
+				  } catch (IOException ex) {
+				    // ignore close exception
+				  }
+				}
+				
+//				String message = block.toString();
+				String message = String.valueOf(block.getNonce());
 	            System.out.println(id + ": Received '" + message + "'");
 	        };
 	        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
