@@ -1,10 +1,13 @@
 package br.com.edublockchain.data;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class Block {	
+public class Block implements Serializable{	
+	
+	private static final long serialVersionUID = -8864288916928454974L;
 	
 	public static final int MAX_TRANSACTIONS = 3;
 	public static final int DIFFICULTY = 5; 	//num of zeros on beginning

@@ -36,7 +36,7 @@ public class TransactionRepository {
 
 		Runnable task = new Runnable() {
 			public void run() {
-				for (int i = 0; i < 15; i++) {
+				for (int i = 0; i < 10; i++) {
 					Transaction t = new Transaction(
 							mock.randomIdentifier(), 
 							mock.randomIdentifier(),

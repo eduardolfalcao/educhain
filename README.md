@@ -11,7 +11,7 @@ Wanna contribute? Let's have fun together!
 To have the miners communicating the fresh mined blocks we use RabbitMQ (though in a real blockchain network, communication is completely decentralized).
 
 ```
-sudo docker run -d --hostname my-rabbit --name edublockchain-rabbit rabbitmq:3
+sudo docker run -d -p 5672:5672 --hostname my-rabbit --name edublockchain-rabbit rabbitmq:3
 ```
 
 This will start a RabbitMQ container listening on the default port of 5672. If you give wait a minute, then do ```docker logs edublockchain-rabbit```, you'll see in the output something similar to:

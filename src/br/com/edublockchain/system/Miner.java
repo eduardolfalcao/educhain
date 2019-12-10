@@ -4,13 +4,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import br.com.edublockchain.data.Block;
 import br.com.edublockchain.data.Transaction;
 import br.com.edublockchain.repository.TransactionRepository;
 import br.com.edublockchain.util.MockUtils;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 public class Miner extends Thread {
+	
+	private final static String QUEUE_NAME = "VALID_BLOCKS";
 	
 	private MockUtils rand;
 	private Block initialBlock, lastBlock;
@@ -36,6 +46,8 @@ public class Miner extends Thread {
 			currentBlock.setInclusionTime(new Date(System.currentTimeMillis()));
 			System.out.println("Block is now valid and being included ("+minerId+"): "+currentBlock);
 			System.out.println(this);
+			
+			sendValidBlock(currentBlock);
 						
 			this.lastBlock = currentBlock;
 			
@@ -94,6 +106,22 @@ public class Miner extends Thread {
 		}
 		out += "\n\n";
 		return out;			
+	}
+	
+	private void sendValidBlock(Block block) {
+		ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            String message = block.toString();
+            channel.basicPublish("", QUEUE_NAME, null, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println(this.minerId+" Sent '" + message + "'");
+        } catch (IOException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public static void main(String[] args) {
