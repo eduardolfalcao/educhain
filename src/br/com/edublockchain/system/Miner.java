@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Miner extends Thread {
 	
-	private final static String QUEUE_NAME = "VALID_BLOCKS";
+	private final static String EXCHANGE_NAME = "VALID_BLOCKS";
 	
 	private MockUtils rand;
 	private Block initialBlock, lastBlock;
@@ -113,9 +113,9 @@ public class Miner extends Thread {
         factory.setHost("localhost");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            String message = block.toString();
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes(StandardCharsets.UTF_8));
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+            String message = ""+block.getNonce();
+            channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes(StandardCharsets.UTF_8));
             System.out.println(this.minerId+" Sent '" + message + "'");
         } catch (IOException e) {
 			e.printStackTrace();
