@@ -28,11 +28,11 @@ public class TransactionRepository {
 		return singleton;
 	}
 	
-	public Set<Transaction> getTransactionPool() {
+	public synchronized Set<Transaction> getTransactionPool() {
 		return transactionPool;
 	}
 	
-	public void removeTransactions(Block b) {
+	public synchronized void removeTransactions(Block b) {
 		transactionPool.removeAll(b.getTransactions());		
 	}
 
@@ -41,7 +41,7 @@ public class TransactionRepository {
 
 		Runnable task = new Runnable() {
 			public void run() {
-				for (int i = 0; i < 10; i++) {
+				for (int i = 0; i < 20; i++) {
 					Transaction t = new Transaction(
 							mock.randomIdentifier(), 
 							mock.randomIdentifier(),

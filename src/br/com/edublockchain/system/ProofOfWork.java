@@ -15,26 +15,25 @@ import br.com.edublockchain.util.MockUtils;
 public class ProofOfWork extends Thread {
 
 	private String minerId;
+	private Blockchain blockchain;
+	
 	private MockUtils rand;
-
 	private Block thirdPartyBlock;
 
-	public ProofOfWork(String minerId) {
-		this.rand = new MockUtils();
+	public ProofOfWork(String minerId, Blockchain blockchain) {		
 		this.minerId = minerId;
+		this.blockchain = blockchain;
+		
+		this.rand = new MockUtils();
 		this.thirdPartyBlock = null;
 	}
 
 	@Override
 	public void run() {
 
-		// initial block points to null
-//		Block currentBlock = createBlockWithTransactions(null);
-
-		do {
-			
+		do {			
 			//a priori, last block is null
-			Block currentBlock = createBlockWithTransactions(Blockchain.getInstance().getLastBlock());
+			Block currentBlock = createBlockWithTransactions(blockchain.getLastBlock());
 			
 			while (!findNonce(currentBlock) && this.thirdPartyBlock == null);
 
@@ -50,8 +49,8 @@ public class ProofOfWork extends Thread {
 			
 			TransactionRepository.getSingleton().removeTransactions(currentBlock);
 
-			Blockchain.getInstance().appendBlock(currentBlock);
-			System.out.println(Blockchain.getInstance());
+			blockchain.appendBlock(currentBlock);
+			System.out.println(blockchain);
 			//TODO how achieve consensus?
 
 		} while (TransactionRepository.getSingleton().getTransactionPool().size()>0);

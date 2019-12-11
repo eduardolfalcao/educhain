@@ -2,20 +2,11 @@ package br.com.edublockchain.model;
 
 public class Blockchain {
 	
-	private static Blockchain blockchain;
-	
 	private Block initialBlock = null, lastBlock = null;
 	private int size;
 	
-	private Blockchain() {
+	public Blockchain() {
 		this.size = 0;
-	}
-		
-	public static Blockchain getInstance() {
-		if(Blockchain.blockchain == null) {
-			Blockchain.blockchain = new Blockchain();
-		}
-		return Blockchain.blockchain;
 	}
 	
 	public void appendBlock(Block block) {
