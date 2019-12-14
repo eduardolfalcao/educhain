@@ -18,10 +18,9 @@ import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
 import br.com.edublockchain.model.Transaction;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
+import br.com.edublockchain.system.communication.TransactionPoolUtils;
 
 public class ProofOfWork extends Thread {
-
-	private final static String URL_TRANSACTION_POOL = "http://0.0.0.0:8080/api/transaction/";
 
 	private String minerId;
 	private Blockchain blockchain;
@@ -69,41 +68,9 @@ public class ProofOfWork extends Thread {
 	}
 
 	private Block createBlockWithTransactions(Block lastBlock) {
-		List<Transaction> transactions = getTransactions(Block.MAX_TRANSACTIONS);
+		List<Transaction> transactions = TransactionPoolUtils.getTransactions(Block.MAX_TRANSACTIONS);
 		return new Block(lastBlock, transactions, minerId);
-	}
-
-	private List<Transaction> getTransactions(int quantity) {
-		URL url = null;
-		List<Transaction> transactionList = new ArrayList<Transaction>();
-		try {
-			url = new URL(URL_TRANSACTION_POOL + quantity);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-
-			int status = con.getResponseCode();
-			if (status == 200) {
-				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String inputLine;
-				StringBuffer content = new StringBuffer();
-				while ((inputLine = in.readLine()) != null) {
-					content.append(inputLine);
-				}
-
-				Gson g = new Gson();
-
-				Type transactionListType = new TypeToken<ArrayList<Transaction>>() {
-				}.getType();
-				transactionList.addAll(g.fromJson(content.toString(), transactionListType));
-				in.close();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return transactionList;
-	}
+	}	
 
 	private boolean findNonce(Block b) {
 		int nonce = rand.nextInt();
@@ -132,7 +99,7 @@ public class ProofOfWork extends Thread {
 
 	public static void main(String[] args) {
 		ProofOfWork pow = new ProofOfWork("dudu", new Blockchain());
-		pow.getTransactions(20);
+		TransactionPoolUtils.getTransactions(20);
 	}
 
 }
