@@ -9,7 +9,7 @@ public class Block implements Serializable{
 	
 	private static final long serialVersionUID = -8864288916928454974L;
 	
-	public static final int MAX_TRANSACTIONS = 3;
+	public static final int MAX_TRANSACTIONS = 15;
 	public static final int DIFFICULTY = 5; 	//num of zeros on beginning
 	
 	private SimpleDateFormat formatter;

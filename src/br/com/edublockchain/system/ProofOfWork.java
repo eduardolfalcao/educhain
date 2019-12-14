@@ -1,18 +1,8 @@
 package br.com.edublockchain.system;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
@@ -57,14 +47,15 @@ public class ProofOfWork extends Thread {
 				RabbitMQUtils.sendValidBlock(currentBlock, minerId);
 			}
 
-			// TransactionRepository.getSingleton().removeTransactions(currentBlock);
+			for(Transaction trans : currentBlock.getTransactions()) {
+				TransactionPoolUtils.removeTransaction(trans);
+			}
 
 			blockchain.appendBlock(currentBlock);
 			System.out.println(blockchain);
 			// TODO how achieve consensus?
 
 		} while (true);
-		// } while (TransactionRepository.getSingleton().getTransactionPool().size()>0);
 	}
 
 	private Block createBlockWithTransactions(Block lastBlock) {
@@ -95,11 +86,6 @@ public class ProofOfWork extends Thread {
 
 	public void setThirdPartyBlock(Block thirdPartyBlock) {
 		this.thirdPartyBlock = thirdPartyBlock;
-	}
-
-	public static void main(String[] args) {
-		ProofOfWork pow = new ProofOfWork("dudu", new Blockchain());
-		TransactionPoolUtils.getTransactions(20);
 	}
 
 }
