@@ -12,15 +12,21 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 	
 	private String sender;
 	private String receiver;
-	private double amount;
+	private double amount, fee;
 	private Date creationTime;
 	
-	public Transaction(String sender, String receiver, double amount) {
+	public Transaction(String sender, String receiver, double amount, double fee) {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.amount = amount;
+		this.fee = fee;
 		this.formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		this.creationTime = new Date(System.currentTimeMillis());
+	}
+	
+	public Transaction(String sender, String receiver, double amount, double fee, Date creationTime) {
+		this(sender, receiver, amount, fee);
+		this.creationTime = creationTime;
 	}
 	
 	@Override
@@ -46,15 +52,19 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+	public double getFee() {
+		return fee;
+	}
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
 	public Date getCreationTime() {
 		return creationTime;
 	}
 	public void setCreationTime(Date creationTime) {
 		this.creationTime = creationTime;
 	}
-
 	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -63,7 +73,8 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 		temp = Double.doubleToLongBits(amount);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((creationTime == null) ? 0 : creationTime.hashCode());
-		result = prime * result + ((formatter == null) ? 0 : formatter.hashCode());
+		temp = Double.doubleToLongBits(fee);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
 		result = prime * result + ((sender == null) ? 0 : sender.hashCode());
 		return result;
@@ -85,10 +96,7 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 				return false;
 		} else if (!creationTime.equals(other.creationTime))
 			return false;
-		if (formatter == null) {
-			if (other.formatter != null)
-				return false;
-		} else if (!formatter.equals(other.formatter))
+		if (Double.doubleToLongBits(fee) != Double.doubleToLongBits(other.fee))
 			return false;
 		if (receiver == null) {
 			if (other.receiver != null)
@@ -105,9 +113,9 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 
 	@Override
 	public int compareTo(Transaction t) {
-		if(this.amount > t.getAmount())
+		if(this.fee < t.getFee())
 			return 1;
-		if(this.amount < t.getAmount())
+		if(this.fee > t.getFee())
 			return -1;
 		return 0;
 	}
