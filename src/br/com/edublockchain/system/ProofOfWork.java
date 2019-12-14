@@ -1,30 +1,36 @@
 package br.com.edublockchain.system;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
 import br.com.edublockchain.model.Transaction;
-import br.com.edublockchain.repository.TransactionRepository;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
-import br.com.edublockchain.util.MockUtils;
 
 public class ProofOfWork extends Thread {
+	
+	private final static String URL_TRANSACTION_POOL = "http://0.0.0.0:8080/api/transaction/";
 
 	private String minerId;
 	private Blockchain blockchain;
 	
-	private MockUtils rand;
+	private Random rand;
 	private Block thirdPartyBlock;
 
 	public ProofOfWork(String minerId, Blockchain blockchain) {		
 		this.minerId = minerId;
 		this.blockchain = blockchain;
 		
-		this.rand = new MockUtils();
+		this.rand = new Random();
 		this.thirdPartyBlock = null;
 	}
 
@@ -47,32 +53,60 @@ public class ProofOfWork extends Thread {
 				RabbitMQUtils.sendValidBlock(currentBlock, minerId);				
 			}
 			
-			TransactionRepository.getSingleton().removeTransactions(currentBlock);
+			//TransactionRepository.getSingleton().removeTransactions(currentBlock);
 
 			blockchain.appendBlock(currentBlock);
 			System.out.println(blockchain);
 			//TODO how achieve consensus?
 
-		} while (TransactionRepository.getSingleton().getTransactionPool().size()>0);
+		} while (true);
+		//} while (TransactionRepository.getSingleton().getTransactionPool().size()>0);
 	}
 
 	private Block createBlockWithTransactions(Block lastBlock) {
 
-		Iterator<Transaction> it = TransactionRepository.getSingleton().getTransactionPool().iterator();
+//		Iterator<Transaction> it = TransactionRepository.getSingleton().getTransactionPool().iterator();
+//
+//		int count = 0;
+//		List<Transaction> transactions = new ArrayList<Transaction>();
+//
+//		while (it.hasNext() && count < Block.MAX_TRANSACTIONS) {
+//			transactions.add(it.next());
+//			count++;
+//		}
 
-		int count = 0;
-		List<Transaction> transactions = new ArrayList<Transaction>();
-
-		while (it.hasNext() && count < Block.MAX_TRANSACTIONS) {
-			transactions.add(it.next());
-			count++;
-		}
-
-		return new Block(lastBlock, transactions, minerId);
+//		return new Block(lastBlock, transactions, minerId);
+		return null;
+	}
+	
+	private void getTransactions(int quantity) {
+		URL url = null;
+		try {
+			url = new URL(URL_TRANSACTION_POOL+quantity);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			
+			int status = con.getResponseCode();
+			if(status == 200) {
+				BufferedReader in = new BufferedReader(
+						  new InputStreamReader(con.getInputStream()));
+						String inputLine;
+						StringBuffer content = new StringBuffer();
+						while ((inputLine = in.readLine()) != null) {
+						    content.append(inputLine);
+						}
+						
+						System.out.println(content);
+						in.close();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 
 	private boolean findNonce(Block b) {
-		int nonce = rand.randomValue();
+		int nonce = rand.nextInt();
 		b.setNonce(nonce);
 		return validateBlock(b) ? true : false;
 	}
@@ -94,6 +128,11 @@ public class ProofOfWork extends Thread {
 
 	public void setThirdPartyBlock(Block thirdPartyBlock) {
 		this.thirdPartyBlock = thirdPartyBlock;
+	}
+	
+	public static void main(String[] args) {
+		ProofOfWork pow = new ProofOfWork("dudu", new Blockchain());
+		pow.getTransactions(20);
 	}
 
 }
