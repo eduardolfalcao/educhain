@@ -1,7 +1,6 @@
 package br.com.edublockchain.system;
 
 import br.com.edublockchain.model.Blockchain;
-import br.com.edublockchain.repository.TransactionRepository;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
 
 public class Miner extends Thread{
@@ -24,12 +23,6 @@ public class Miner extends Thread{
 	}
 	
 	public static void main(String[] args) {
-		TransactionRepository rep = TransactionRepository.getSingleton();
-		try {
-			Thread.sleep(1000);
-		} catch (Exception e) {
-		}
-
 		Miner m1 = new Miner("Edu");
 		Miner m2 = new Miner("Jose");
 		m1.start();
