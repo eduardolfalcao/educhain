@@ -31,6 +31,7 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 	
 	@Override
 	public String toString() {
+		this.formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount+"; Creation time: "+formatter.format(creationTime);
 	}
 	
