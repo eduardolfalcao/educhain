@@ -1,25 +1,48 @@
 package br.com.edublockchain.system;
 
+import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
 
 public class Miner extends Thread{
 	
+	private String minerId;
 	private ProofOfWork pow;
 	private Blockchain blockchain;
 	
 	public Miner(String id) {
+		this.minerId = id;
 		this.blockchain = new Blockchain();
 		this.pow = new ProofOfWork(id, this.blockchain);
+	}
+	
+	public void receivedNewBlock(Block minedBlock) {
+		String message = String.valueOf(minedBlock.getNonce());
+        System.out.println(minerId + ": Received '" + message + "'");
+        
+        if(ProofOfWork.isBlockValid(minedBlock)) {
+        	
+        	//blockchain is empty: puzzle is enough
+        	//blockchain is not empty: hash of last block included in mined block must be
+        	//equal to hash of current last block of the blockchains
+            if(blockchain.getInitialBlock()==null ||
+            		minedBlock.getHashPreviousBlock().equals(Block.hashOfBlock(blockchain.getLastBlock()))) {
+            	pow.setThirdPartyBlock(minedBlock);
+            }
+        }
 	}
 	
 	@Override
 	public void run() {
 		
-		RabbitMQUtils.listen(this.pow);
+		RabbitMQUtils.listen(this);
 		
 		Thread powThread = new Thread(this.pow);
 		powThread.start();
+	}
+	
+	public String getMinerId() {
+		return minerId;
 	}
 	
 	public static void main(String[] args) {

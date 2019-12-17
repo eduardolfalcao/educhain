@@ -92,8 +92,8 @@ public class Block implements Serializable{
 		return creatorId;
 	}
 	
-	public String hashOfBlock() {
-		String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(toString());
+	public static String hashOfBlock(Block block) {
+		String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(block.toString());
 		return sha256hex;
 	}
 	

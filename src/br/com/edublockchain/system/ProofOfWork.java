@@ -29,12 +29,11 @@ public class ProofOfWork extends Thread {
 	@Override
 	public void run() {
 
-		do {
+		while (true) {
 			// a priori, last block is null
 			Block currentBlock = createBlockWithTransactions(blockchain.getLastBlock());
 
-			while (!findNonce(currentBlock) && this.thirdPartyBlock == null)
-				;
+			while (!findNonce(currentBlock) && this.thirdPartyBlock == null);
 
 			if (this.thirdPartyBlock != null) {
 				currentBlock = thirdPartyBlock;
@@ -55,7 +54,7 @@ public class ProofOfWork extends Thread {
 			System.out.println(blockchain);
 			// TODO how achieve consensus?
 
-		} while (true);
+		}
 	}
 
 	private Block createBlockWithTransactions(Block lastBlock) {
@@ -66,17 +65,21 @@ public class ProofOfWork extends Thread {
 	private boolean findNonce(Block b) {
 		int nonce = rand.nextInt();
 		b.setNonce(nonce);
-		return validateBlock(b) ? true : false;
+		if(isBlockValid(b)) {
+			b.setHashPreviousBlock(Block.hashOfBlock(b));
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	private boolean validateBlock(Block b) {
-		String hash = b.hashOfBlock();
+	public static boolean isBlockValid(Block b) {
+		String hash = Block.hashOfBlock(b);
 		// System.out.println(minerId+" is trying hash "+hash);
 		for (int i = 0; i < Block.DIFFICULTY; i++) {
 			if (hash.charAt(i) != '0')
 				return false;
 		}
-		b.setHashPreviousBlock(hash);
 		return true;
 	}
 

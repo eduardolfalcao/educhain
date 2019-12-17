@@ -15,6 +15,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import br.com.edublockchain.model.Block;
+import br.com.edublockchain.system.Miner;
 import br.com.edublockchain.system.ProofOfWork;
 
 public class RabbitMQUtils {
@@ -22,7 +23,7 @@ public class RabbitMQUtils {
 	private final static String EXCHANGE_NAME = "VALID_BLOCKS";
 	private final static String HOST = "localhost";
 	
-	public static void listen(ProofOfWork pow) {
+	public static void listen(Miner miner) {
 		ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(HOST);
         Connection connection = null;
@@ -35,15 +36,15 @@ public class RabbitMQUtils {
 			String queueName = channel.queueDeclare().getQueue();
 		    channel.queueBind(queueName, EXCHANGE_NAME, "");
 		    
-			System.out.println(pow.getMinerId()+ ": Waiting for messages. To exit press CTRL+C");
+			System.out.println(miner.getMinerId()+ ": Waiting for messages. To exit press CTRL+C");
 			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 	            
 				ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
 				ObjectInput in = null;
-				Block block = null;
+				Block minedBlock = null;
 				try {
 				  in = new ObjectInputStream(bis);
-				  block = (Block) in.readObject();
+				  minedBlock = (Block) in.readObject();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} finally {
@@ -56,11 +57,8 @@ public class RabbitMQUtils {
 				  }
 				}
 				
-				if(!block.getCreatorId().equals(pow.getMinerId())) {				
-					String message = String.valueOf(block.getNonce());
-		            System.out.println(pow.getMinerId() + ": Received '" + message + "'");
-		            
-		            pow.setThirdPartyBlock(block);
+				if(!minedBlock.getCreatorId().equals(miner.getMinerId())) {				
+					miner.receivedNewBlock(minedBlock);
 	            }
 	        };
 	        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
