@@ -3,6 +3,10 @@ package br.com.edublockchain.system;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.LogManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
@@ -17,6 +21,8 @@ public class ProofOfWork extends Thread {
 
 	private Random rand;
 	private Block thirdPartyBlock;
+	
+	static Logger logger = LoggerFactory.getLogger(ProofOfWork.class);
 
 	public ProofOfWork(String minerId, Blockchain blockchain) {
 		this.minerId = minerId;
@@ -37,12 +43,12 @@ public class ProofOfWork extends Thread {
 
 			if (this.thirdPartyBlock != null) {
 				currentBlock = thirdPartyBlock;
-				System.out.println("Another miner (" + currentBlock.getCreatorId() + ") discovered the nonce. Block: "
-						+ currentBlock);
+				logger.info("["+minerId+"] Miner "+ currentBlock.getCreatorId() +" discovered a valid nonce.\n"
+						+ "Block: " +currentBlock);
 				thirdPartyBlock = null; // reseting
 			} else {
 				currentBlock.setInclusionTime(new Date(System.currentTimeMillis()));
-				System.out.println("Block is now valid and being included (" + minerId + "): " + currentBlock);
+				logger.info("["+minerId+"] I found a valid nonce: " + currentBlock.getNonce());
 				RabbitMQUtils.sendValidBlock(currentBlock, minerId);
 			}
 
@@ -51,7 +57,7 @@ public class ProofOfWork extends Thread {
 			}
 
 			blockchain.appendBlock(currentBlock);
-			System.out.println(blockchain);
+			logger.debug("["+minerId+"] Blockchain: "+blockchain);
 			// TODO how achieve consensus?
 
 		}
@@ -75,7 +81,6 @@ public class ProofOfWork extends Thread {
 
 	public static boolean isBlockValid(Block b) {
 		String hash = Block.hashOfBlock(b);
-		// System.out.println(minerId+" is trying hash "+hash);
 		for (int i = 0; i < Block.DIFFICULTY; i++) {
 			if (hash.charAt(i) != '0')
 				return false;
