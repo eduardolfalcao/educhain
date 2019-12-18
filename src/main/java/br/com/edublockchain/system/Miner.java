@@ -1,8 +1,7 @@
 package br.com.edublockchain.system;
 
-import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
@@ -14,7 +13,7 @@ public class Miner extends Thread{
 	private ProofOfWork pow;
 	private Blockchain blockchain;
 	
-	static Logger logger = LoggerFactory.getLogger(Miner.class);
+	static Logger logger = Logger.getLogger(Miner.class);
 	
 	public Miner(String id) {
 		this.minerId = id;
@@ -50,9 +49,7 @@ public class Miner extends Thread{
 		return minerId;
 	}
 	
-	public static void main(String[] args) {
-		PropertyConfigurator.configure("src/main/resources/log4j.properties");
-				
+	public static void main(String[] args) {		
 		Miner m1 = new Miner("Edu");
 		Miner m2 = new Miner("Jose");
 		m1.start();
