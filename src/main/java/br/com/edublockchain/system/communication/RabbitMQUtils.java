@@ -9,6 +9,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.log4j.Logger;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -16,9 +18,10 @@ import com.rabbitmq.client.DeliverCallback;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.system.Miner;
-import br.com.edublockchain.system.ProofOfWork;
 
 public class RabbitMQUtils {
+	
+	static Logger logger = Logger.getLogger(RabbitMQUtils.class);
 	
 	private final static String EXCHANGE_NAME = "VALID_BLOCKS";
 	private final static String HOST = "localhost";
@@ -36,7 +39,7 @@ public class RabbitMQUtils {
 			String queueName = channel.queueDeclare().getQueue();
 		    channel.queueBind(queueName, EXCHANGE_NAME, "");
 		    
-			System.out.println(miner.getMinerId()+ ": Waiting for messages. To exit press CTRL+C");
+			logger.info("["+miner.getMinerId()+"] Waiting for messages.");
 			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 	            
 				ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
@@ -75,7 +78,6 @@ public class RabbitMQUtils {
              Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
             
-            String message = ""+block.getNonce();
             byte[] blockInBytes = null;
             
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -92,7 +94,8 @@ public class RabbitMQUtils {
             }
             
             channel.basicPublish(EXCHANGE_NAME, "", null, blockInBytes);
-            System.out.println(minerId+" Sent '" + message + "'");
+            logger.info("["+minerId+"] Broadcasting a block with nonce "+block.getNonce());
+            logger.debug("["+minerId+"] Broadcasting the following block: "+block);
         } catch (IOException e) {
 			e.printStackTrace();
 		} catch (TimeoutException e) {

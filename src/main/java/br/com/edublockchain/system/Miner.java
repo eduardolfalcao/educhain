@@ -1,6 +1,5 @@
 package br.com.edublockchain.system;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import br.com.edublockchain.model.Block;

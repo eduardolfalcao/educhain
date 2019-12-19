@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpMethod;
 
 import com.google.gson.Gson;
@@ -22,6 +23,8 @@ import br.com.edublockchain.model.Transaction;
 import br.com.edublockchain.system.communication.formatter.DateDeserializer;
 
 public class TransactionPoolUtils {
+	
+	static Logger logger = Logger.getLogger(TransactionPoolUtils.class);
 	
 	private final static String URL_TRANSACTION_POOL = "http://0.0.0.0:8080/api/transaction/";
 	
@@ -67,7 +70,7 @@ public class TransactionPoolUtils {
 		return transactionList;
 	}
 	
-	public static boolean removeTransaction(Transaction trans) {
+	public static boolean removeTransaction(Transaction trans, String minerId) {
 		HttpURLConnection con = openConnection(URL_TRANSACTION_POOL, HttpMethod.DELETE.toString());
 		
 		JsonObject transJson = new JsonObject();
@@ -87,7 +90,8 @@ public class TransactionPoolUtils {
 	        
 	        int status = con.getResponseCode();
 			if (status == 200) {
-				System.out.println("Removed: "+transJson.toString());
+				logger.info("["+minerId+"] Removed a transaction from pool");
+	            logger.debug("["+minerId+"] Transaction removed: "+trans);
 				return true;
 			}
 		} catch (IOException e) {

@@ -3,10 +3,8 @@ package br.com.edublockchain.system;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.LogManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
@@ -22,7 +20,7 @@ public class ProofOfWork extends Thread {
 	private Random rand;
 	private Block thirdPartyBlock;
 	
-	static Logger logger = LoggerFactory.getLogger(ProofOfWork.class);
+	static Logger logger = Logger.getLogger(ProofOfWork.class);
 
 	public ProofOfWork(String minerId, Blockchain blockchain) {
 		this.minerId = minerId;
@@ -53,7 +51,7 @@ public class ProofOfWork extends Thread {
 			}
 
 			for(Transaction trans : currentBlock.getTransactions()) {
-				TransactionPoolUtils.removeTransaction(trans);
+				TransactionPoolUtils.removeTransaction(trans, minerId);
 			}
 
 			blockchain.appendBlock(currentBlock);
