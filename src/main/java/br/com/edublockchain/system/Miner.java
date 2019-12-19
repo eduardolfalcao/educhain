@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
+import br.com.edublockchain.setup.PropertiesManager;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
 
 public class Miner extends Thread{
@@ -14,10 +15,10 @@ public class Miner extends Thread{
 	
 	static Logger logger = Logger.getLogger(Miner.class);
 	
-	public Miner(String id) {
-		this.minerId = id;
+	public Miner() {
+		this.minerId = PropertiesManager.getInstance().getId();
 		this.blockchain = new Blockchain();
-		this.pow = new ProofOfWork(id, this.blockchain);
+		this.pow = new ProofOfWork(this.minerId, this.blockchain);
 	}
 	
 	public void receivedNewBlock(Block minedBlock) {
@@ -49,10 +50,8 @@ public class Miner extends Thread{
 	}
 	
 	public static void main(String[] args) {		
-		Miner m1 = new Miner("Edu");
-		Miner m2 = new Miner("Jose");
+		Miner m1 = new Miner();
 		m1.start();
-		m2.start();
 	}
 
 }

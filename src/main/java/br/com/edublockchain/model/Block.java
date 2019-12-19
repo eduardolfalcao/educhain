@@ -5,12 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import br.com.edublockchain.setup.PropertiesManager;
+
 public class Block implements Serializable{	
 	
 	private static final long serialVersionUID = -8864288916928454974L;
 	
-	public static final int MAX_TRANSACTIONS = 15;
-	public static final int DIFFICULTY = 5; 	//num of zeros on beginning
+	public static final int MAX_TRANSACTIONS = PropertiesManager.getInstance().getMaxTransactions();
+	public static final int DIFFICULTY = PropertiesManager.getInstance().getDifficulty(); 	//num of zeros on beginning
 	
 	private SimpleDateFormat formatter;
 	

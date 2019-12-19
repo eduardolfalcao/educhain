@@ -20,13 +20,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import br.com.edublockchain.model.Transaction;
+import br.com.edublockchain.setup.PropertiesManager;
 import br.com.edublockchain.system.communication.formatter.DateDeserializer;
 
 public class TransactionPoolUtils {
 	
 	static Logger logger = Logger.getLogger(TransactionPoolUtils.class);
 	
-	private final static String URL_TRANSACTION_POOL = "http://0.0.0.0:8080/api/transaction/";
+	private final static String URL_TRANSACTION_POOL = PropertiesManager.getInstance().getTransactionPoolHost()+"api/transaction/";
 	
 	private static HttpURLConnection openConnection(String urlName, String method) {
 		HttpURLConnection con = null;

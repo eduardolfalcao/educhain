@@ -17,14 +17,15 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import br.com.edublockchain.model.Block;
+import br.com.edublockchain.setup.PropertiesManager;
 import br.com.edublockchain.system.Miner;
 
 public class RabbitMQUtils {
 	
 	static Logger logger = Logger.getLogger(RabbitMQUtils.class);
 	
-	private final static String EXCHANGE_NAME = "VALID_BLOCKS";
-	private final static String HOST = "localhost";
+	private final static String EXCHANGE_NAME = PropertiesManager.getInstance().getBlockQueue();
+	private final static String HOST = PropertiesManager.getInstance().getRabbitHost();
 	
 	public static void listen(Miner miner) {
 		ConnectionFactory factory = new ConnectionFactory();
