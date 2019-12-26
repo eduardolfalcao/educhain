@@ -71,7 +71,7 @@ public class TransactionPoolUtils {
 		return transactionList;
 	}
 	
-	public static boolean removeTransaction(Transaction trans, String minerId) {
+	public static boolean removeTransaction(Transaction trans) {
 		HttpURLConnection con = openConnection(URL_TRANSACTION_POOL, HttpMethod.DELETE.toString());
 		
 		JsonObject transJson = new JsonObject();
@@ -91,8 +91,8 @@ public class TransactionPoolUtils {
 	        
 	        int status = con.getResponseCode();
 			if (status == 200) {
-				logger.info("["+minerId+"] Removed a transaction from pool");
-	            logger.debug("["+minerId+"] Transaction removed: "+trans);
+				logger.info("["+PropertiesManager.getInstance().getId()+"] Removed a transaction from pool");
+	            logger.debug("["+PropertiesManager.getInstance().getId()+"] Transaction removed: "+trans);
 				return true;
 			}
 		} catch (IOException e) {

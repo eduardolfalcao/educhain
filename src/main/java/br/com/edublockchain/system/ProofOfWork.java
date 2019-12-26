@@ -9,12 +9,12 @@ import org.apache.log4j.Logger;
 import br.com.edublockchain.model.Block;
 import br.com.edublockchain.model.Blockchain;
 import br.com.edublockchain.model.Transaction;
+import br.com.edublockchain.setup.PropertiesManager;
 import br.com.edublockchain.system.communication.RabbitMQUtils;
 import br.com.edublockchain.system.communication.TransactionPoolUtils;
 
 public class ProofOfWork extends Thread {
 
-	private String minerId;
 	private Blockchain blockchain;
 
 	private Random rand;
@@ -22,8 +22,7 @@ public class ProofOfWork extends Thread {
 	
 	static Logger logger = Logger.getLogger(ProofOfWork.class);
 
-	public ProofOfWork(String minerId, Blockchain blockchain) {
-		this.minerId = minerId;
+	public ProofOfWork(Blockchain blockchain) {
 		this.blockchain = blockchain;
 
 		this.rand = new Random();
@@ -41,21 +40,21 @@ public class ProofOfWork extends Thread {
 
 			if (this.thirdPartyBlock != null) {
 				currentBlock = thirdPartyBlock;
-				logger.info("["+minerId+"] Miner "+ currentBlock.getCreatorId() +" discovered a valid nonce.\n"
+				logger.info("["+PropertiesManager.getInstance().getId()+"] Miner "+ currentBlock.getCreatorId() +" discovered a valid nonce.\n"
 						+ "Block: " +currentBlock);
 				thirdPartyBlock = null; // reseting
 			} else {
 				currentBlock.setInclusionTime(new Date(System.currentTimeMillis()));
-				logger.info("["+minerId+"] I found a valid nonce: " + currentBlock.getNonce());
-				RabbitMQUtils.sendValidBlock(currentBlock, minerId);
+				logger.info("["+PropertiesManager.getInstance().getId()+"] I found a valid nonce: " + currentBlock.getNonce());
+				RabbitMQUtils.sendValidBlock(currentBlock);
 			}
 
 			for(Transaction trans : currentBlock.getTransactions()) {
-				TransactionPoolUtils.removeTransaction(trans, minerId);
+				TransactionPoolUtils.removeTransaction(trans);
 			}
 
 			blockchain.appendBlock(currentBlock);
-			logger.debug("["+minerId+"] Blockchain: "+blockchain);
+			logger.debug("["+PropertiesManager.getInstance().getId()+"] Blockchain: "+blockchain);
 			// TODO how achieve consensus?
 
 		}
@@ -63,7 +62,7 @@ public class ProofOfWork extends Thread {
 
 	private Block createBlockWithTransactions(Block lastBlock) {
 		List<Transaction> transactions = TransactionPoolUtils.getTransactions(Block.MAX_TRANSACTIONS);
-		return new Block(lastBlock, transactions, minerId);
+		return new Block(lastBlock, transactions, PropertiesManager.getInstance().getId());
 	}	
 
 	private boolean findNonce(Block b) {
@@ -84,10 +83,6 @@ public class ProofOfWork extends Thread {
 				return false;
 		}
 		return true;
-	}
-
-	public String getMinerId() {
-		return minerId;
 	}
 
 	public void setThirdPartyBlock(Block thirdPartyBlock) {

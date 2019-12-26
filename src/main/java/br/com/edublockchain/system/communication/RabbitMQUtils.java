@@ -40,7 +40,7 @@ public class RabbitMQUtils {
 			String queueName = channel.queueDeclare().getQueue();
 		    channel.queueBind(queueName, EXCHANGE_NAME, "");
 		    
-			logger.info("["+miner.getMinerId()+"] Waiting for messages.");
+			logger.info("["+PropertiesManager.getInstance().getId()+"] Waiting for messages.");
 			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 	            
 				ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
@@ -61,7 +61,7 @@ public class RabbitMQUtils {
 				  }
 				}
 				
-				if(!minedBlock.getCreatorId().equals(miner.getMinerId())) {				
+				if(!minedBlock.getCreatorId().equals(PropertiesManager.getInstance().getId())) {				
 					miner.receivedNewBlock(minedBlock);
 	            }
 	        };
@@ -72,7 +72,7 @@ public class RabbitMQUtils {
 		}
 	}
 	
-	public static void sendValidBlock(Block block, String minerId) {
+	public static void sendValidBlock(Block block) {
 		ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(HOST);
         try (Connection connection = factory.newConnection();
@@ -95,8 +95,8 @@ public class RabbitMQUtils {
             }
             
             channel.basicPublish(EXCHANGE_NAME, "", null, blockInBytes);
-            logger.info("["+minerId+"] Broadcasting a block with nonce "+block.getNonce());
-            logger.debug("["+minerId+"] Broadcasting the following block: "+block);
+            logger.info("["+PropertiesManager.getInstance().getId()+"] Broadcasting a block with nonce "+block.getNonce());
+            logger.debug("["+PropertiesManager.getInstance().getId()+"] Broadcasting the following block: "+block);
         } catch (IOException e) {
 			e.printStackTrace();
 		} catch (TimeoutException e) {
