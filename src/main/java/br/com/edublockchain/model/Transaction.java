@@ -3,7 +3,6 @@ package br.com.edublockchain.model;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -17,25 +16,24 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 	private String receiver;
 	private double amount, fee;
 	
+	private String uniqueID;
+	
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private Date creationTime;
-	
-	public Transaction(String sender, String receiver, double amount, double fee) {
+		
+	public Transaction(String sender, String receiver, double amount, double fee, Date creationTime, String uniqueID) {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.amount = amount;
 		this.fee = fee;
-		this.creationTime = new Date(System.currentTimeMillis());
-	}
-	
-	public Transaction(String sender, String receiver, double amount, double fee, Date creationTime) {
-		this(sender, receiver, amount, fee);
 		this.creationTime = creationTime;
+		this.uniqueID = uniqueID;
 	}
 	
 	@Override
 	public String toString() {
-		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount+"; Fee: "+fee+"; Creation time: "+formatter.format(creationTime);
+		return "\nSender: "+sender+"; Receiver: "+receiver+"; Amount: "+amount+"; Fee: "+fee+"; Creation time: "+formatter.format(creationTime)
+				+"; UniqueID: "+uniqueID;
 	}
 	
 	public String getSender() {
@@ -68,20 +66,16 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 	public void setCreationTime(Date creationTime) {
 		this.creationTime = creationTime;
 	}
+	public String getUniqueID() {
+		return uniqueID;
+	}
+	public void setUniqueID(String uniqueID) {
+		this.uniqueID = uniqueID;
+	}
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(amount);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((creationTime == null) ? 0 : creationTime.hashCode());
-		temp = Double.doubleToLongBits(fee);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
-		result = prime * result + ((sender == null) ? 0 : sender.hashCode());
-		return result;
+		return uniqueID.hashCode();
 	}
 
 	@Override
@@ -95,11 +89,6 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 		Transaction other = (Transaction) obj;
 		if (Double.doubleToLongBits(amount) != Double.doubleToLongBits(other.amount))
 			return false;
-		if (creationTime == null) {
-			if (other.creationTime != null)
-				return false;
-		} else if (!creationTime.equals(other.creationTime))
-			return false;
 		if (Double.doubleToLongBits(fee) != Double.doubleToLongBits(other.fee))
 			return false;
 		if (receiver == null) {
@@ -111,6 +100,11 @@ public class Transaction implements Comparable<Transaction>, Serializable{
 			if (other.sender != null)
 				return false;
 		} else if (!sender.equals(other.sender))
+			return false;
+		if (uniqueID == null) {
+			if (other.uniqueID != null)
+				return false;
+		} else if (!uniqueID.equals(other.uniqueID))
 			return false;
 		return true;
 	}

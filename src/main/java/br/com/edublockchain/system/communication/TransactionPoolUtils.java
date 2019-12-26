@@ -80,6 +80,7 @@ public class TransactionPoolUtils {
 		transJson.addProperty("amount", trans.getAmount());
 		transJson.addProperty("fee", trans.getFee());
 		transJson.addProperty("creationTime", Transaction.formatter.format(trans.getCreationTime()));
+		transJson.addProperty("uniqueID", trans.getUniqueID());
 		
 		con.setDoOutput(true);
 		con.setRequestProperty("Content-Type", "application/json");
