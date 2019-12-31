@@ -8,6 +8,23 @@ Wanna contribute? Let's have fun together!
 
 <br>
 
+## Architecture
+
+In the architecture of Edublockchain there are three main components: the <b>miner component</b>, a <b>queue (RabbitMQ)</b> used for communication between miners, and the [transaction pool](https://github.com/eduardolfalcao/transaction-pool).
+
+The transaction pool is a component that receives transactions from final userr. Such set of transactions can be accessed by miners to include some transactions in the block to be mined. Note that miners can select different transactions to create different blocks, as depicted on the Figure below.
+
+![alt text](imgs/arch1.png)
+
+When a miner finds a valid nonce, she sends this block to the other miners through the RabbitMQ. Meanwhile, the other miners will keep searching for a valid nonce to the blocks they constructed, until they receive the freshly mined block. Note also that the transactions included in the block should be removed (or made invisible), so that duplicates are not included in the blockchain.
+
+![alt text](imgs/arch2.png)
+
+As the queue is configured in a publish-subscribe fashion, the other miners will receive the block just mined and include it in the blockchain.
+
+![alt text](imgs/arch3.png)
+
+<br>
 
 ## Prerequisites
 
