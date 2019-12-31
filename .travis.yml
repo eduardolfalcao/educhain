@@ -1,0 +1,14 @@
+language: java
+sudo: false
+dist: trusty
+jdk:
+  - oraclejdk11
+
+script:
+  - mvn --version
+  - mvn clean
+  - mvn validate
+  - mvn compile
+  - mvn test
+  - mvn package 
+  - mvn verify
