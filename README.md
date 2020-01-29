@@ -1,4 +1,4 @@
-# edublockchain
+# educhain
 A blockchain for educational and learning purposes :)
 
 The aim of this project is to create our own blockchain to better understand basic blockchain concepts. 
@@ -10,7 +10,7 @@ Wanna contribute? Let's have fun together!
 
 ## Architecture
 
-In the architecture of Edublockchain there are three main components: the <b>miner component</b>, a <b>queue (RabbitMQ)</b> used for communication between miners, and the [transaction pool](https://github.com/eduardolfalcao/transaction-pool).
+In the architecture of Educhain there are three main components: the <b>miner component</b>, a <b>queue (RabbitMQ)</b> used for communication between miners, and the [transaction pool](https://github.com/eduardolfalcao/transaction-pool).
 
 The transaction pool is a component that receives transactions from final users. Such a set of transactions can be accessed by miners to include some transactions in the block to be mined. Note that miners can select different transactions to create different blocks, as depicted on the Figure below.
 
