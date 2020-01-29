@@ -1,11 +1,11 @@
-package br.com.edublockchain.model;
+package br.com.educhain.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import br.com.edublockchain.setup.PropertiesManager;
+import br.com.educhain.setup.PropertiesManager;
 
 public class Block implements Serializable{	
 	

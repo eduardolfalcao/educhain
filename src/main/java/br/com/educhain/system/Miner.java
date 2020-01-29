@@ -1,11 +1,11 @@
-package br.com.edublockchain.system;
+package br.com.educhain.system;
 
 import org.apache.log4j.Logger;
 
-import br.com.edublockchain.model.Block;
-import br.com.edublockchain.model.Blockchain;
-import br.com.edublockchain.setup.PropertiesManager;
-import br.com.edublockchain.system.communication.RabbitMQUtils;
+import br.com.educhain.model.Block;
+import br.com.educhain.model.Blockchain;
+import br.com.educhain.setup.PropertiesManager;
+import br.com.educhain.system.communication.RabbitMQUtils;
 
 public class Miner extends Thread{
 	

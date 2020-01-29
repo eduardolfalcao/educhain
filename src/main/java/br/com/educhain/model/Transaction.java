@@ -1,4 +1,4 @@
-package br.com.edublockchain.model;
+package br.com.educhain.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

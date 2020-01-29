@@ -1,4 +1,4 @@
-package br.com.edublockchain.setup;
+package br.com.educhain.setup;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

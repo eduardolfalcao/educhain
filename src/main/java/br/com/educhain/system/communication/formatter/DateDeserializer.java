@@ -1,4 +1,4 @@
-package br.com.edublockchain.system.communication.formatter;
+package br.com.educhain.system.communication.formatter;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

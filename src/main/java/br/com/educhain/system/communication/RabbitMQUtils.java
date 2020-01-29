@@ -1,4 +1,4 @@
-package br.com.edublockchain.system.communication;
+package br.com.educhain.system.communication;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,9 +16,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-import br.com.edublockchain.model.Block;
-import br.com.edublockchain.setup.PropertiesManager;
-import br.com.edublockchain.system.Miner;
+import br.com.educhain.model.Block;
+import br.com.educhain.setup.PropertiesManager;
+import br.com.educhain.system.Miner;
 
 public class RabbitMQUtils {
 	

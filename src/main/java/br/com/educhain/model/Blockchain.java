@@ -1,4 +1,4 @@
-package br.com.edublockchain.model;
+package br.com.educhain.model;
 
 public class Blockchain {
 	

@@ -1,4 +1,4 @@
-package br.com.edublockchain.system.communication;
+package br.com.educhain.system.communication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +19,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import br.com.edublockchain.model.Transaction;
-import br.com.edublockchain.setup.PropertiesManager;
-import br.com.edublockchain.system.communication.formatter.DateDeserializer;
+import br.com.educhain.model.Transaction;
+import br.com.educhain.setup.PropertiesManager;
+import br.com.educhain.system.communication.formatter.DateDeserializer;
 
 public class TransactionPoolUtils {
 	
